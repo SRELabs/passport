@@ -97,10 +97,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'archer_user',
-        'USER': 'archer',
-        'PASSWORD': 'gT9oVeOORh5Z',
-        'HOST': 'db.op.archer.xin',
-        'PORT': '58111',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
