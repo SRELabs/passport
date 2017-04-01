@@ -1,0 +1,295 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+{% block pagecss %}
+{% endblock %}
+
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+
+    <!-- 发布历史记录 -->
+
+    <div class="col-xs-12">
+
+        <table id="sample-table-1" class="table table-striped table-bordered table-hover dataTables-example">
+            <thead>
+            <tr>
+
+                <th class="center">APP_ID</th>
+                <th>域名</th>
+                <th>APP_KEY</th>
+                <th>名称</th>
+                <th>管理员</th>
+                <th>回调</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+
+            <!-- 一条数据 -->
+            {% for d in data %}
+                <tr>
+                    <td class="center">{{ d.app_id }}</td>
+                    <td>{{ d.app_domain }}</td>
+                    <td>******<a data-toggle="modal" data-target="#displayModal"
+                                 data-app_key="{{ d.app_key }}">[显示]</a><a
+                            href="javascript:if(confirm('确认重置吗?')) window.location='{% url 'app:app_key_reset' d.app_id %}'"
+                            id="id-btn-dialog2">
+                        [重置]
+                    </a></td>
+                    <td>{{ d.app_name }}</td>
+                    <td>{{ d.app_manager }}</td>
+                    <td>{{ d.app_callback }}</td>
+                    <td><a data-toggle="modal" data-target="#editModal"
+                           data-app_id="{{ d.app_id }}"
+                           data-app_domain="{{ d.app_domain }}"
+                           data-app_name="{{ d.app_name }}"
+                           data-app_manager="{{ d.app_manager }}"
+                           data-app_callback="{{ d.app_callback }}"
+                           data-app_policy="{{ d.app_policy }}">编辑 | </a> <a
+                            href="javascript:if(confirm('确认删除吗?')) window.location='{% url 'app:app_del' d.app_id %}'"
+                            id="id-btn-dialog2">
+                        删除
+                    </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="">
+            <a class="btn btn-success " data-toggle="modal"
+               data-target="#addModal">
+                创建
+            </a>
+        </div>
+        {#        <div class="">#}
+        {#                <a class="btn btn-success " href="{% url 'app:app_add' %}">创建</a>#}
+        {#            </div>#}
+        {#        </div>#}
+        <!-- /.span -->
+    </div>
+
+
+    <!-- 添加策略 -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_1" name="form_1" method="post"
+                          action="/app/add/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 名称:</label>
+                            {% csrf_token %}
+                            <input type="text" class="form-control"
+                                   id="app_name"
+                                   name="app_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">域名:</label>
+                            <input type="text" class="form-control"
+                                   id="app_domain"
+                                   name="app_domain">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">管理员:</label>
+                            <input type="text" class="form-control"
+                                   id="app_manager"
+                                   name="app_manager">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">回调地址:</label>
+                            <input type="text" class="form-control"
+                                   id="app_callback"
+                                   name="app_callback">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">安全策略:</label>
+                            <select class="form-control" id="app_policy" name="app_policy">
+                                {% for d in policy_data %}
+                                    <option value="{{ d.policy_id }}">{{ d.policy_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_1')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑策略 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_2" name="form_2" method="post"
+                          action="/app/edit/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 名称:</label>
+                            {% csrf_token %}
+                            <input type="hidden" class="form-control"
+                                   id="app_id"
+                                   name="app_id">
+                            <input type="text" class="form-control"
+                                   id="app_name"
+                                   name="app_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">域名:</label>
+                            <input type="text" class="form-control"
+                                   id="app_domain"
+                                   name="app_domain">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">管理员:</label>
+                            <input type="text" class="form-control"
+                                   id="app_manager"
+                                   name="app_manager">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">回调地址:</label>
+                            <input type="text" class="form-control"
+                                   id="app_callback"
+                                   name="app_callback">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">安全策略:</label>
+                            <select class="form-control" id="app_policy" name="app_policy">
+                                {% for d in policy_data %}
+                                    <option value="{{ d.policy_id }}">{{ d.policy_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_2')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- display -->
+    <div class="modal fade" id="displayModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+
+{% endblock %}
+
+
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+    <script>
+        $(document).ready(function () {
+            $(".dataTables-example").dataTable();
+            var oTable = $("#editable").dataTable();
+            oTable.$("td").editable("#", {
+                "callback": function (sValue, y) {
+                    var aPos = oTable.fnGetPosition(this);
+                    oTable.fnUpdate(sValue, aPos[0], aPos[1])
+                }, "submitdata": function (value, settings) {
+                    return {"row_id": this.parentNode.getAttribute("id"), "column": oTable.fnGetPosition(this)[2]}
+                }, "width": "90%", "height": "100%"
+            })
+        });
+    </script>
+
+    <script>
+        $('#addModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-title_user').text('【添加应用】');
+        })
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-body #app_id').val(button.data('app_id'));
+            modal.find('.modal-body #app_name').val(button.data('app_name'));
+            modal.find('.modal-body #app_domain').val(button.data('app_domain'));
+            modal.find('.modal-body #app_manager').val(button.data('app_manager'));
+            modal.find('.modal-body #app_callback').val(button.data('app_callback'));
+            modal.find('.modal-body #app_policy').val(button.data('app_policy'));
+            modal.find('.modal-title_user').text('【编辑规则】');
+        })
+        $('#displayModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-body').text(button.data('app_key'));
+            modal.find('.modal-title_user').text('【当前APPKEY】');
+        })
+    </script>
+{% endblock %}
+

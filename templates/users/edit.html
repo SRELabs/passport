@@ -1,0 +1,110 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+
+{% block pagecss %}
+{#    <link rel="stylesheet" href="{% static "assets/css/bootstrap-duallistbox.css" %}"/>#}
+{% endblock %}
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="form-horizontal" role="form" id="form1" name="form1" method="post">
+                {% csrf_token %}
+                <!-- 用户名 -->
+                <div class="form-group">
+                    <label for="form-field-1" class="col-sm-2 control-label no-padding-right"> 用户名 </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="users_name" name="users_name"
+                               value="{{ data.users_name }}" readonly>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 姓 -->
+                <div class="form-group">
+                    <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 姓 </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" id="users_last_name"
+                               name="users_last_name" value="{{ data.users_last_name }}">
+                        <span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 名 -->
+                <div class="form-group">
+                    <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 名 </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" id="users_first_name"
+                               name="users_first_name" value="{{ data.users_first_name }}">
+                        <span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- password -->
+                <div class="form-group">
+                    <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 密码 </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" id="users_password"
+                               name="users_password" value="">
+                        <span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 邮箱 -->
+                <div class="form-group">
+                    <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> E-mail </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" id="users_email"
+                               name="users_email" value="{{ data.users_email }}">
+                        <span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 提交表单 -->
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-4 col-md-8">
+                        <button class="btn btn-info" type="submit">
+                            <i class="ace-icon fa fa-check bigger-110"></i>
+                            修改
+                        </button>
+
+                        &nbsp; &nbsp; &nbsp;
+                        <a class="btn btn-danger" href="{% url 'users:user_list' %}">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            返回
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <!-- /.span -->
+    </div>
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+{% endblock %}
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+{% endblock %}
+

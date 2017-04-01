@@ -1,0 +1,249 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+{% block pagecss %}
+{% endblock %}
+
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+
+        <!-- 发布历史记录 -->
+
+        <div class="col-xs-12">
+
+            <table id="sample-table-1" class="table table-striped table-bordered table-hover dataTables-example">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>覆盖面</th>
+                    <th>状态</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 一条数据 -->
+                {% for d in data %}
+                    <tr {% if  d.policy_active == 2 %}
+                        style="background-color: red;color: aquamarine"
+                    {% endif %} >
+                        <td>{{ d.policy_name }}</td>
+                        <td>{{ d.get_policy_default_display }} </td>
+                        <td>{{ d.get_policy_active_display }} </td>
+                        <td>{{ d.policy_desc }} </td>
+                        <td>
+                            <a href="{% url 'policy:policy_rule_list' d.policy_id %}"
+                               id="id-btn-dialog20"> 查看规则 | </a>
+                            <a data-toggle="modal" data-target="#editModal"
+                               data-policy_id="{{ d.policy_id }}"
+                               data-policy_name="{{ d.policy_name }}"
+                               data-policy_desc="{{ d.policy_desc }}"
+                               data-policy_default="{{ d.policy_default }}"
+                               data-policy_active="{{ d.policy_active }}"
+                            >编辑 | </a>
+                            {% if d.policy_active == 1 %}
+                                <a href="javascript:if(confirm('确认禁用吗?')) window.location='{% url 'policy:policy_disable' d.policy_id %}'">
+                                    禁用 |
+                                </a>
+                            {% else %}
+                                <a href="javascript:if(confirm('确认启用吗?')) window.location='{% url 'policy:policy_active' d.policy_id %}'">
+                                    启用 |
+                                </a>
+                            {% endif %}
+                            <a href="javascript:if(confirm('确认删除吗?')) window.location='{% url 'policy:policy_del' d.policy_id %}'">
+                                删除
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="">
+                <a class="btn btn-success " data-toggle="modal"
+                   data-target="#addModal" data-id=""
+                   data-account="">
+                    创建
+                </a>
+            </div>
+        </div>
+        <!-- /.span -->
+    </div>
+
+    <!-- 添加策略 -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_1" name="form_1" method="post"
+                          action="/policy/add/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 名称:</label>
+                            {% csrf_token %}
+                            <input type="text" class="form-control"
+                                   id="policy_name"
+                                   name="policy_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">默认:</label>
+                            <select class="form-control" id="policy_default" name="policy_default">
+                                <option value="2">子站</option>
+                                <option value="1">全站</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">状态:</label>
+                            <select class="form-control" id="policy_active" name="policy_active">
+                                <option value="1">启用</option>
+                                <option value="2">禁用</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">备注:</label>
+                            <input type="text" class="form-control"
+                                   id="policy_desc"
+                                   name="policy_desc">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_1')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑策略 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_2" name="form_2" method="post"
+                          action="/policy/edit/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 名称:</label>
+                            {% csrf_token %}
+                            <input type="hidden" class="form-control"
+                                   id="policy_id"
+                                   name="policy_id">
+                            <input type="text" class="form-control"
+                                   id="policy_name"
+                                   name="policy_name">
+                        </div>
+                        <div class="form-group" style="display: none">
+                            <label for="recipient-name"
+                                   class="control-label">默认:</label>
+                            <select class="form-control" id="policy_default" name="policy_default">
+                                <option value="2">子站</option>
+                                <option value="1">全站</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">状态:</label>
+                            <select class="form-control" id="policy_active" name="policy_active">
+                                <option value="1">启用</option>
+                                <option value="2">禁用</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">备注:</label>
+                            <input type="text" class="form-control"
+                                   id="policy_desc"
+                                   name="policy_desc">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_2')">提交
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+
+{% endblock %}
+
+
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+    <script>
+        $(document).ready(function () {
+            $(".dataTables-example").dataTable();
+            var oTable = $("#editable").dataTable();
+            oTable.$("td").editable("#", {
+                "callback": function (sValue, y) {
+                    var aPos = oTable.fnGetPosition(this);
+                    oTable.fnUpdate(sValue, aPos[0], aPos[1])
+                }, "submitdata": function (value, settings) {
+                    return {"row_id": this.parentNode.getAttribute("id"), "column": oTable.fnGetPosition(this)[2]}
+                }, "width": "90%", "height": "100%"
+            })
+        });
+    </script>
+
+
+    <script>
+        $('#addModal').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            modal.find('.modal-title_user').text('【添加策略】');
+        })
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            {#            var recipient = button.data('vpn_name'); // Extract info from data-* attributes#}
+            var modal = $(this);
+            modal.find('.modal-body #policy_id').val(button.data('policy_id'));
+            modal.find('.modal-body #policy_name').val(button.data('policy_name'));
+            modal.find('.modal-body #policy_default').val(button.data('policy_default'));
+            {#            modal.find('.modal-body #policy_active').append("<option value='Y'>Yes</option>");#}
+            modal.find('.modal-body #policy_active').val(button.data('policy_active'));
+            modal.find('.modal-body #policy_desc').val(button.data('policy_desc'));
+            modal.find('.modal-title_user').text('【编辑策略】');
+        })
+    </script>
+{% endblock %}
+

@@ -1,0 +1,100 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+{% block pagecss %}
+{#    <link rel="stylesheet" href="{% static "css/bootstrap-duallistbox.css" %}"/>#}
+{% endblock %}
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="form-horizontal" role="form" id="form1" name="form1" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="form-field-1" class="col-sm-1 control-label no-padding-right"> 类型 </label>
+
+                    <div class="col-sm-8">
+                        <select class="form-control" id="rule_type" name="rule_type">
+                            {% if data.rule_type == 'ip' %}
+                            <option value="ip">IP</option>
+                            <option value="username">用户名</option>
+                            {% else %}
+                                <option value="username">用户名</option>
+                                <option value="ip">IP</option>
+                            {% endif %}
+
+                        </select>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 名称 -->
+                <div class="form-group">
+                    <label for="form-field-1" class="col-sm-1 control-label no-padding-right">值</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" value="{{ data.rule_value }}" id="rule_value" name="rule_value">
+                        <input type="hidden" class="form-control" value="{{ data.rule_policy }}" id="rule_policy" name="rule_policy">
+                        <input type="hidden" class="form-control" value="{{ data.rule_id }}" id="rule_id" name="rule_id">
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <div class="form-group">
+                    <label for="form-field-1" class="col-sm-1 control-label no-padding-right"> 动作 </label>
+
+                    <div class="col-sm-8">
+                        <select class="form-control" id="rule_action" name="rule_action">
+                            {% if data.rule_action == "allow" %}
+                                <option value="allow">allow</option>
+                                <option value="deny">deny</option>
+                            {% else %}
+                                <option value="deny">deny</option>
+                                <option value="allow">allow</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 名称 -->
+                <div class="form-group">
+                    <label for="form-field-1" class="col-sm-1 control-label no-padding-right">优先级 </label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" value="{{ data.rule_priority }}" id="rule_priority" name="rule_priority">
+                    </div>
+                </div>
+                <div class="space-4"></div>
+
+                <!-- 提交表单 -->
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-4 col-md-8">
+                        <button class="btn btn-info" type="submit" >
+                            <i class="ace-icon glyphicon glyphicon-plus bigger-110"></i>
+                            提交
+                        </button>
+
+                        &nbsp; &nbsp; &nbsp;
+                        <a class="btn btn-danger" href="{% url 'policy:policy_rule_list' data.rule_policy %}">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            返回
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <!-- /.span -->
+    </div>
+    {{ form.errors }}
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+{% endblock %}
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+{% endblock %}
+

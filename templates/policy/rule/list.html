@@ -1,0 +1,236 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+{% block pagecss %}
+{% endblock %}
+
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+
+        <!-- 发布历史记录 -->
+        <div class="col-xs-12">
+            <p><strong>策略：{{ policy_name }}. 备注：权重从1-100，最多不超过100条！</strong></p>
+            <table id="sample-table-1" class="table table-striped table-bordered table-hover dataTables-example">
+                <thead>
+                <tr>
+                    <th>优先级</th>
+                    <th>类型</th>
+                    <th>值</th>
+                    <th>动作</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 一条数据 -->
+                {% for d in data %}
+                    <tr>
+                        <td>{{ d.rule_priority }}</td>
+                        <td>{{ d.rule_type }} </td>
+                        <td>{{ d.rule_value }} </td>
+                        <td>{{ d.rule_action }} </td>
+                        <td>
+                            <a data-toggle="modal" data-target="#editModal"
+                               data-rule_id="{{ d.rule_id }}"
+                               data-rule_priority="{{ d.rule_priority }}"
+                               data-rule_policy="{{ d.rule_policy }}"
+                               data-rule_type="{{ d.rule_type }}"
+                               data-rule_value="{{ d.rule_value }}"
+                               data-rule_action="{{ d.rule_action }}">编辑 | </a>
+                            <a href="javascript:if(confirm('确认删除吗?')) window.location='{% url 'policy:policy_rule_del' d.rule_id %}'"
+                               id="id-btn-dialog2"> 删除 </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="">
+                <a class="btn btn-success " data-toggle="modal"
+                   data-target="#addModal">
+                    创建
+                </a>
+            </div>
+        </div>
+        <!-- /.span -->
+    </div>
+
+    <!-- 添加策略 -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_1" name="form_1" method="post"
+                          action="/policy/rule/add/{{ policy_id }}">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 优先级:</label>
+                            {% csrf_token %}
+                            <input type="hidden" class="form-control"
+                                   id="rule_policy"
+                                   name="rule_policy" value="{{ policy_id }}">
+                            <input type="text" class="form-control"
+                                   id="rule_priority"
+                                   name="rule_priority">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">类型:</label>
+                            <select class="form-control" id="rule_type" name="rule_type">
+                                <option value="ip">ip</option>
+                                <option value="username">用户名</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">动作:</label>
+                            <select class="form-control" id="rule_action" name="rule_action">
+                                <option value="allow">allow</option>
+                                <option value="deny">deny</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">值:</label>
+                            <input type="text" class="form-control"
+                                   id="rule_value"
+                                   name="rule_value">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_1')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑策略 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_2" name="form_2" method="post"
+                          action="/policy/rule/edit/{{ policy_id }}">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 优先级:</label>
+                            {% csrf_token %}
+                            <input type="hidden" class="form-control"
+                                   id="rule_policy"
+                                   name="rule_policy">
+                            <input type="hidden" class="form-control"
+                                   id="rule_id"
+                                   name="rule_id">
+                            <input type="text" class="form-control"
+                                   id="rule_priority"
+                                   name="rule_priority">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">类型:</label>
+                            <select class="form-control" id="rule_type" name="rule_type">
+                                <option value="ip">ip</option>
+                                <option value="username">用户名</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">动作:</label>
+                            <select class="form-control" id="rule_action" name="rule_action">
+                                <option value="allow">allow</option>
+                                <option value="deny">deny</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">值:</label>
+                            <input type="text" class="form-control"
+                                   id="rule_value"
+                                   name="rule_value">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_2')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+
+{% endblock %}
+
+
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+    <script>
+        $(document).ready(function () {
+            $(".dataTables-example").dataTable();
+            var oTable = $("#editable").dataTable();
+            oTable.$("td").editable("#", {
+                "callback": function (sValue, y) {
+                    var aPos = oTable.fnGetPosition(this);
+                    oTable.fnUpdate(sValue, aPos[0], aPos[1])
+                }, "submitdata": function (value, settings) {
+                    return {"row_id": this.parentNode.getAttribute("id"), "column": oTable.fnGetPosition(this)[2]}
+                }, "width": "90%", "height": "100%"
+            })
+        });
+    </script>
+
+    <script>
+        $('#addModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-title_user').text('【添加规则】');
+        })
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-body #rule_id').val(button.data('rule_id'));
+            modal.find('.modal-body #rule_policy').val(button.data('rule_policy'));
+            modal.find('.modal-body #rule_priority').val(button.data('rule_priority'));
+            modal.find('.modal-body #rule_type').val(button.data('rule_type'));
+            modal.find('.modal-body #rule_action').val(button.data('rule_action'));
+            modal.find('.modal-body #rule_value').val(button.data('rule_value'));
+            modal.find('.modal-title_user').text('【编辑规则】');
+        })
+    </script>
+{% endblock %}
+

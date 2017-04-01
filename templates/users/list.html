@@ -1,0 +1,248 @@
+{% extends 'content.html' %}
+{% load staticfiles %}
+
+{% block pagecss %}
+{% endblock %}
+
+
+<!-- 正文开始 -->
+{% block content %}
+    <div class="row">
+
+    <!-- 发布历史记录 -->
+
+    <div class="col-xs-12">
+        <table id="sample-table-1" class="table table-striped table-bordered table-hover dataTables-example">
+            <thead>
+            <tr>
+                <th>账号</th>
+                <th>姓名</th>
+                <th>邮箱</th>
+                <th>状态</th>
+                <th>上一次登录IP</th>
+                <th>上一次登录</th>
+                <th>创建日期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+
+            <!-- 一条数据 -->
+            {% for d in data %}
+                <tr>
+                    {#                        <td class="center">{{ d.id }}</td>#}
+                    <td>{{ d.users_name }} </td>
+                    <td>{{ d.users_last_name }}{{ d.users_first_name }}</td>
+                    <td>{{ d.users_email }}</td>
+                    <td>{{ d.get_users_active_display }}</td>
+                    <td>{{ d.users_last_login_ip }}</td>
+                    <td>{{ d.users_last_login }}</td>
+                    <td>{{ d.users_create_time }}</td>
+                    <td>
+                        <a data-toggle="modal" data-target="#editModal"
+                                    data-users_name="{{ d.users_name }}"
+                                    data-id="{{ d.id }}"
+                                    data-users_last_name="{{ d.users_last_name }}"
+                                    data-users_first_name="{{ d.users_first_name }}"
+                                    data-users_active="{{ d.users_active }}"
+                                    data-users_email="{{ d.users_email }}">编辑</a>
+                        <a href="javascript:if(confirm('确认删除吗?')) window.location='{% url 'users:user_del' d.users_name %}'"
+                            id="id-btn-dialog2">删除</a>
+                        {% if d.users_active %}
+                            <a href="javascript:if(confirm('确认锁定吗?')) window.location='{% url 'users:user_active' d.users_name %}'"
+                               id="id-btn-dialog2">锁定</a>
+                        {% else %}
+                            <a href="javascript:if(confirm('确认解锁吗?')) window.location='{% url 'users:user_active' d.users_name %}'"
+                               id="id-btn-dialog2">解锁</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="">
+            <a class="btn btn-success " data-toggle="modal" data-target="#addModal">添加用户</a>
+        </div>
+    </div>
+
+    <!-- 添加用户 -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_1" name="form_1" method="post"
+                          action="/users/add/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 用户:</label>
+                            {% csrf_token %}
+                            <input type="text" class="form-control"
+                                   id="users_name"
+                                   name="users_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">密码:</label>
+                            <input type="text" class="form-control"
+                                   id="users_password"
+                                   name="users_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">姓:</label>
+                            <input type="text" class="form-control"
+                                   id="users_last_name"
+                                   name="users_last_name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">名:</label>
+                            <input type="text" class="form-control"
+                                   id="users_first_name"
+                                   name="users_first_name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">邮箱:</label>
+                            <input type="text" class="form-control"
+                                   id="users_email"
+                                   name="users_email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_1')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑用户 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_2" name="form_2" method="post"
+                          action="/users/edit/">
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label"> 用户:</label>
+                            {% csrf_token %}
+                            <input type="text" class="form-control"
+                                   id="users_name"
+                                   name="users_name" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">密码:</label>
+                            <input type="text" class="form-control"
+                                   id="users_password"
+                                   name="users_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">姓:</label>
+                            <input type="text" class="form-control"
+                                   id="users_last_name"
+                                   name="users_last_name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">名:</label>
+                            <input type="text" class="form-control"
+                                   id="users_first_name"
+                                   name="users_first_name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name"
+                                   class="control-label">邮箱:</label>
+                            <input type="text" class="form-control"
+                                   id="users_email"
+                                   name="users_email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            onclick="submit_form('form_2')">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- 当前页面需要引入的js-->
+{% block pagescripts %}
+
+{% endblock %}
+
+
+<!-- 当前页面需要执行的脚本 -->
+{% block inline %}
+    <script>
+        $(document).ready(function () {
+            $(".dataTables-example").dataTable();
+            var oTable = $("#editable").dataTable();
+            oTable.$("td").editable("#", {
+                "callback": function (sValue, y) {
+                    var aPos = oTable.fnGetPosition(this);
+                    oTable.fnUpdate(sValue, aPos[0], aPos[1])
+                }, "submitdata": function (value, settings) {
+                    return {"row_id": this.parentNode.getAttribute("id"), "column": oTable.fnGetPosition(this)[2]}
+                }, "width": "90%", "height": "100%"
+            })
+        });
+    </script>
+
+    <script>
+        $('#addModal').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            modal.find('.modal-title_user').text('【添加用户】');
+        })
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            modal.find('.modal-body #users_name').val(button.data('users_name'));
+            modal.find('.modal-body #users_email').val(button.data('users_email'));
+            modal.find('.modal-body #users_first_name').val(button.data('users_first_name'));
+            modal.find('.modal-body #users_last_name').val(button.data('users_last_name'));
+            modal.find('.modal-body #users_password').val(button.data('users_password'));
+            modal.find('.modal-title_user').text('【编辑用户】');
+        })
+    </script>
+{% endblock %}
+
