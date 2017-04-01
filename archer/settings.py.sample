@@ -97,10 +97,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'archer_user',
-        'USER': 'archer',
-        'PASSWORD': 'gT9oVeOORh5Z',
-        'HOST': 'db.op.archer.xin',
-        'PORT': '58111',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -116,11 +116,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = 'http://static.archer.xin/'
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, "static"),
-#     BASE_DIR + "/static/",
-# )
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+     os.path.join(BASE_DIR, "static"),
+     BASE_DIR + "/static/",
+)
 
 LOGGING = {
     'version': 1,
