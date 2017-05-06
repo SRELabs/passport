@@ -16,5 +16,6 @@ urlpatterns = patterns('',
 
                        # API
                        url(r'^api/get_user_info/$', 'users.views.get_user_info'),
+                       url(r'^api/auth/$', 'users.views.auth'),
 
                        )

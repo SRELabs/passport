@@ -312,6 +312,25 @@ def get_user_info(request):
     return JSONResponse(serializer.data)
 
 
+@csrf_exempt
+def auth(request):
+    """验证用户密码，临时用于openvpn"""
+    users_name = request.REQUEST.get('users_name', '')
+    users_pass = request.REQUEST.get('users_pass', '')
+    # 验证账号密码
+    m2 = hashlib.md5()
+    m2.update(users_pass)
+    try:
+        user = Users.objects.get(users_name=users_name, users_password=m2.hexdigest())
+        if user.users_active:
+            ret = 'success'
+        else:
+            ret = 'fail'
+    except Users.DoesNotExist:
+        ret = 'fail'
+    return HttpResponse(ret)
+
+
 def random_str(random_length=32):
     """
     生成随机ST/TGT
