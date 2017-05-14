@@ -44,14 +44,9 @@
                 <input type="password" name="password" class="form-control" placeholder="密码">
 {#                <input type="password" class="form-control" placeholder="密码" required="">#}
             </div>
-            {% if enable_otp == '1' %}
+            {% if enable_otp %}
             <div class="form-group">
                 <input type=""  name="otp" class="form-control" placeholder="口令">
-            </div>
-            {% endif %}
-            {% if enable_code == '1' %}
-            <div class="form-group">
-                <input type="text"  name="code" size="4" class="form-control col-sm-1" placeholder="验证码"><img src="/system/u/code/"/>
             </div>
             {% endif %}
             <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>

@@ -204,3 +204,6 @@ LOGGING = {
         }
     }
 }
+
+# ARCHER CONFIG
+ARCHER_ENABLE_OTP = True
