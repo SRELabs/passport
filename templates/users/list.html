@@ -18,6 +18,7 @@
                 <th>账号</th>
                 <th>姓名</th>
                 <th>邮箱</th>
+                <th>OTP</th>
                 <th>状态</th>
                 <th>上一次登录IP</th>
                 <th>上一次登录</th>
@@ -32,10 +33,15 @@
             <!-- 一条数据 -->
             {% for d in data %}
                 <tr>
-                    {#                        <td class="center">{{ d.id }}</td>#}
                     <td>{{ d.users_name }} </td>
                     <td>{{ d.users_last_name }}{{ d.users_first_name }}</td>
                     <td>{{ d.users_email }}</td>
+                    <td>{{ d.users_otp }}
+                        <a data-toggle="modal" data-target="#displayModal"
+                           data-users_otp_img="/system/u/otp/qrcode?uid={{ d.users_name }}&type=users"
+                           data-users_otp="{{ d.users_otp }}"
+                        >[显示二维码]</a>
+                    </td>
                     <td>{{ d.get_users_active_display }}</td>
                     <td>{{ d.users_last_login_ip }}</td>
                     <td>{{ d.users_last_login }}</td>
@@ -48,6 +54,7 @@
                                     data-users_first_name="{{ d.users_first_name }}"
                                     data-users_active="{{ d.users_active }}"
                                     data-users_email="{{ d.users_email }}">编辑</a>
+
                         <a href="javascript:if(confirm('确认删除吗?')) window.location='{% url 'users:user_del' d.users_name %}'"
                             id="id-btn-dialog2">删除</a>
                         {% if d.users_active %}
@@ -202,6 +209,30 @@
             </div>
         </div>
     </div>
+
+    <!-- display -->
+    <div class="modal fade" id="displayModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title_user" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <img id="img_users_otp" width="250" height="250" src=""/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 <!-- 当前页面需要引入的js-->
@@ -231,7 +262,7 @@
         $('#addModal').on('show.bs.modal', function (event) {
             var modal = $(this);
             modal.find('.modal-title_user').text('【添加用户】');
-        })
+        });
 
         $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
@@ -242,7 +273,15 @@
             modal.find('.modal-body #users_last_name').val(button.data('users_last_name'));
             modal.find('.modal-body #users_password').val(button.data('users_password'));
             modal.find('.modal-title_user').text('【编辑用户】');
-        })
+        });
+
+        $('#displayModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var modal = $(this);
+            $("#img_users_otp").attr("src",button.data('users_otp_img'));
+            modal.find('.modal-otp_users').text(button.data('users_otp'));
+            modal.find('.modal-title_user').text('【OTP二维码】');
+        });
     </script>
 {% endblock %}
 

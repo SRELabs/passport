@@ -19,6 +19,7 @@ from datetime import datetime
 from rest_framework.renderers import JSONRenderer
 import hashlib
 import re
+import pyotp
 
 
 @require_http_methods(["GET", "POST"])
@@ -39,7 +40,7 @@ def registry(request):
                     m2.update(cd['users_password1'])
                     Users(users_name=cd['users_name'],
                           users_password=m2.hexdigest(), users_create_time=datetime.now(),
-                          users_last_login=datetime.now()).save()
+                          users_last_login=datetime.now(), users_otp=pyotp.random_base32()).save()
                     msg = '注册成功'
                     message_error = False
         else:
@@ -207,6 +208,7 @@ def user_add(request):
             f = form.save(commit=False)
             f.users_password = m2.hexdigest()
             f.users_create_time = datetime.now()
+            f.users_otp = pyotp.random_base32()
             f.save()
             msg = '创建成功'
             message_error = False

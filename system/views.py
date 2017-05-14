@@ -3,7 +3,7 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry
@@ -11,11 +11,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response
 from django.conf import settings
-from library.config_lib import *
+from cStringIO import StringIO
 from library.common import paging
 from system.models import UserProfile
 from system.forms import *
+from users.models import Users
 import pyotp
+import qrcode
 
 
 def super_user_required(login_url='/error_403'):
@@ -244,6 +246,35 @@ def user_otp(request, uid):
 
 @login_required(login_url='/system/u/login/')
 @super_user_required(login_url="/error_403")
+def user_otp_qrcode(request):
+    uid = request.REQUEST.get('uid', '')
+    otp_type = request.REQUEST.get('type', 'users')
+    try:
+        if otp_type == 'users':
+            data = Users.objects.get(pk=uid)
+            otp = data.users_otp
+            email = data.users_email
+        else:
+            data = User.objects.get(pk=uid)
+            otp = UserProfile.objects.get(user=data).otp
+            email = data.email
+        tmp = "otpauth://totp/%s?secret=%s" % (email, otp)
+        img = qrcode.make(tmp)
+
+        buf = StringIO()
+        img.save(buf)
+        image_stream = buf.getvalue()
+
+        response = HttpResponse(image_stream, content_type="image/png")
+        # response['Last-Modified'] = 'Mon, 27 Apr 2015 02:05:03 GMT'
+        # response['Cache-Control'] = 'max-age=1'
+        return response
+    except Exception,e:
+        return HttpResponse()
+
+
+@login_required(login_url='/system/u/login/')
+@super_user_required(login_url="/error_403")
 def user_del(request, uid):
     if uid:
         try:
@@ -432,3 +463,4 @@ def log_list(request):
     data, page_range = paging(page, data, 40)
     return render_to_response('system/log_list.html', {'data': data, 'page_range': page_range},
                               context_instance=RequestContext(request))
+
