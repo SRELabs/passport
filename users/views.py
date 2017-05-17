@@ -104,6 +104,7 @@ def user_login(request):
                     info = '账号或者密码错误!'
         # 跳转页面
         if message_error:
+            response = HttpResponseRedirect(reverse("users:user_login"))
             messages.add_message(request, messages.ERROR, info)
         return response
     else:
