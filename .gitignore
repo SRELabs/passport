@@ -6,4 +6,7 @@
 conf/archer.conf
 settings.py
 archer.conf
+data/main.db
+data/*
+*.db
 
