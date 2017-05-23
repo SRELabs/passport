@@ -207,3 +207,10 @@ LOGGING = {
 
 # ARCHER CONFIG
 ARCHER_ENABLE_OTP = True
+
+
+# sample: For Sign
+APP_ID = 1
+APP_KEY = "33ikc1t30y2d212a3tm69ot2jyctfi7h"
+APP_INPUT_CHARSET = 'utf-8'
+APP_SIGN_TYPE = 'MD5'
