@@ -4,3 +4,5 @@ MySQL-python==1.2.5
 PyMySQL==0.7.6
 pyotp==2.2.1
 requests==2.13.0
+qrcode
+Image
