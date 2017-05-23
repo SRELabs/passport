@@ -230,20 +230,18 @@
         $('#addModal').on('show.bs.modal', function (event) {
             var modal = $(this);
             modal.find('.modal-title_user').text('【添加策略】');
-        })
+        });
 
         $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            {#            var recipient = button.data('vpn_name'); // Extract info from data-* attributes#}
             var modal = $(this);
             modal.find('.modal-body #policy_id').val(button.data('policy_id'));
             modal.find('.modal-body #policy_name').val(button.data('policy_name'));
             modal.find('.modal-body #policy_default').val(button.data('policy_default'));
-            {#            modal.find('.modal-body #policy_active').append("<option value='Y'>Yes</option>");#}
             modal.find('.modal-body #policy_active').val(button.data('policy_active'));
             modal.find('.modal-body #policy_desc').val(button.data('policy_desc'));
             modal.find('.modal-title_user').text('【编辑策略】');
-        })
+        });
     </script>
 {% endblock %}
 

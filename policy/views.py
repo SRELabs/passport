@@ -23,17 +23,18 @@ def policy_list(request):
 def policy_add(request):
     if request.method == 'POST':
         form = PolicyAddForm(request.POST)
-        message_error, msg = True, '策略添加s失败'
+        message_error, msg = True, '策略添加失败'
         if form.is_valid():
-            if form.cleaned_data['policy_default'] == 1 and not Policy.objects.filter(policy_default=1):
+            if form.cleaned_data['policy_default'] == 1 and Policy.objects.filter(policy_default=1):
+                msg = '策略添加失败，只允许存在一条全站策略'
+            else:
                 if not Policy.objects.filter(policy_name=form.cleaned_data['policy_name']):
                     f = form.save(commit=False)
                     f.save()
                     message_error, msg = False, '策略添加成功'
                 else:
-                    msg = '策略添加失败，当前策略已经存在'
-            else:
-                msg = '策略添加失败，只允许存在一条全站策略'
+                    msg = '策略添加失败，策略存在'
+
         else:
             msg = '策略添加失败: ' + re.compile(r'<[^>]+>', re.S).sub('', str(form.errors))
         render_message(request, message_error, msg)

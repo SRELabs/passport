@@ -18,6 +18,8 @@ from random import Random
 from datetime import datetime
 from rest_framework.renderers import JSONRenderer
 import hashlib
+import re
+import pyotp
 
 
 @require_http_methods(["GET", "POST"])
@@ -38,7 +40,7 @@ def registry(request):
                     m2.update(cd['users_password1'])
                     Users(users_name=cd['users_name'],
                           users_password=m2.hexdigest(), users_create_time=datetime.now(),
-                          users_last_login=datetime.now()).save()
+                          users_last_login=datetime.now(), users_otp=pyotp.random_base32()).save()
                     msg = '注册成功'
                     message_error = False
         else:
@@ -102,6 +104,7 @@ def user_login(request):
                     info = '账号或者密码错误!'
         # 跳转页面
         if message_error:
+            response = HttpResponseRedirect(reverse("users:user_login"))
             messages.add_message(request, messages.ERROR, info)
         return response
     else:
@@ -206,6 +209,7 @@ def user_add(request):
             f = form.save(commit=False)
             f.users_password = m2.hexdigest()
             f.users_create_time = datetime.now()
+            f.users_otp = pyotp.random_base32()
             f.save()
             msg = '创建成功'
             message_error = False
@@ -310,6 +314,25 @@ def get_user_info(request):
     except Ticket.DoesNotExist:
         serializer = UserSerializer()
     return JSONResponse(serializer.data)
+
+
+@csrf_exempt
+def auth(request):
+    """验证用户密码，临时用于openvpn"""
+    users_name = request.REQUEST.get('users_name', '')
+    users_pass = request.REQUEST.get('users_pass', '')
+    # 验证账号密码
+    m2 = hashlib.md5()
+    m2.update(users_pass)
+    try:
+        user = Users.objects.get(users_name=users_name, users_password=m2.hexdigest())
+        if user.users_active:
+            ret = 'success'
+        else:
+            ret = 'fail'
+    except Users.DoesNotExist:
+        ret = 'fail'
+    return HttpResponse(ret)
 
 
 def random_str(random_length=32):

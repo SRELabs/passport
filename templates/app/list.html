@@ -271,7 +271,7 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
             var modal = $(this);
             modal.find('.modal-title_user').text('【添加应用】');
-        })
+        });
 
         $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
@@ -283,13 +283,13 @@
             modal.find('.modal-body #app_callback').val(button.data('app_callback'));
             modal.find('.modal-body #app_policy').val(button.data('app_policy'));
             modal.find('.modal-title_user').text('【编辑规则】');
-        })
+        });
         $('#displayModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var modal = $(this);
             modal.find('.modal-body').text(button.data('app_key'));
             modal.find('.modal-title_user').text('【当前APPKEY】');
-        })
+        });
     </script>
 {% endblock %}
 

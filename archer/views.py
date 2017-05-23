@@ -3,6 +3,8 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from app.models import App
 from users.views import check_ticket
 
@@ -21,5 +23,7 @@ def nav(request):
     data = App.objects.all()
     tgc = request.COOKIES.get('ARCHER_TGC', '')
     username = check_ticket(tgc)
+    if not username:
+        return HttpResponseRedirect(reverse("users:user_login"))
     return render_to_response('nav.html', {'data': data, 'username': username},
                               context_instance=RequestContext(request))

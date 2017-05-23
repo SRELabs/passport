@@ -14,6 +14,7 @@ urlpatterns = patterns('',
                        url(r'^u/del/(\d+)/$', views.user_del, name='system_user_del'),
                        url(r'^u/edit/(\d+)/$', views.user_edit, name='system_user_edit'),
                        url(r'^u/otp/(\d+)/$', views.user_otp, name='system_user_otp'),
+                       url(r'^u/otp/qrcode/$', views.user_otp_qrcode, name='system_user_otp_qrcode'),
 
                        # group
                        url(r'^g/list/$', views.group_list, name='system_group_list'),
@@ -29,5 +30,7 @@ urlpatterns = patterns('',
 
                        # log
                        url(r'^l/list/$', views.log_list, name='system_log_list'),
+
+                       # qrcode
                        )
 
